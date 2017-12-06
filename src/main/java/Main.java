@@ -6,6 +6,8 @@ import model.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
@@ -34,26 +36,73 @@ public class Main {
 //        printList(list);
 
 
-//        User user = new User("Mike", 20);
-
-
-        User user = session.load(User.class, 1);
-        System.out.println(user);
-        user.getPets().remove(0);
-        System.out.println(user);
-
-
 //        List list = session.createQuery("from User").list();
 //        printList(list);
+
+
+        Criteria criteria = session.createCriteria(User.class);
+
+//        COUNT OF ROWS
+//        criteria.setMaxResults(1);
+
+
+//        LIKE
+//        criteria.add(Restrictions.like("name", "%i%"));
+
+
+//        BETWEEN
+//        criteria.add(Restrictions.between("age", 10, 19));
+
+
+//        IS EMPTY?
+//        criteria.add(Restrictions.isEmpty("pets"));
+
+
+//        ==
+//        criteria.add(Restrictions.eq("name", "Mike"));
+
+
+//        OR
+//        criteria.add(Restrictions.or(
+//                Restrictions.like("name", "Mike"),
+//                Restrictions.like("name", "%il%")
+//        ));
+
+
+//        LIKE + JOIN
+//        criteria.add(Restrictions.like("name", "%i%"));
+//        criteria.createCriteria("pets").add(Restrictions.eq("name", "Patzy"));
+
+
+//        JOIN
+//        criteria.createCriteria("pets").add(Restrictions.eq("name", "Patzy"));
+
+
+//        JOIN?
+//        criteria.createAlias("pets", "pt");
+
+
+//        User user = new User("Mike", 20);
+//        criteria.add(Example.create(user));
+//        criteria.add(Restrictions.isEmpty("pets"));
+
+
+//        FROM TO
+//        criteria.setFirstResult(5).setMaxResults(10);
+
+
+
+        List list = criteria.list();
+        printList(list);
 
 
         session.getTransaction().commit();
         session.close();
     }
 
-    public static void printList(List list) {
-        for (Object user : list) {
-            System.out.println(user);
+    public static <T> void printList(List<T> list) {
+        for (T elem : list) {
+            System.err.println(elem);
         }
     }
 }
