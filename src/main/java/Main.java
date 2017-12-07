@@ -14,10 +14,7 @@ import org.hibernate.query.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -40,7 +37,7 @@ public class Main {
 //        printList(list);
 
 
-        Criteria criteria = session.createCriteria(User.class);
+//        Criteria criteria = session.createCriteria(User.class);
 
 //        COUNT OF ROWS
 //        criteria.setMaxResults(1);
@@ -91,10 +88,25 @@ public class Main {
 //        criteria.setFirstResult(5).setMaxResults(10);
 
 
+//        List list = criteria.list();
+//        printList(list);
 
-        List list = criteria.list();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> u = criteria.from(User.class); //from User u
+
+        criteria
+                .select(u)
+                .where(builder.and(
+                        builder.equal(u.get("name"), "Mike"),
+                        builder.between(u.<Integer>get("age"), 10, 20),
+                        builder.isEmpty(u.<List<Pet>>get("pets")).not()
+                ));
+
+
+        List<User> list = session.createQuery(criteria).getResultList();
         printList(list);
-
 
         session.getTransaction().commit();
         session.close();
